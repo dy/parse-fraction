@@ -1,0 +1,27 @@
+{
+  "name": "parse-fraction",
+  "version": "1.0.0",
+  "description": "Parse numerator and denominator from a written fraction",
+  "main": "index.js",
+  "dependencies": {
+    "defined": "^1.0.0"
+  },
+  "devDependencies": {
+    "tape": "^4.8.0"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dfcreative/parse-fraction.git"
+  },
+  "keywords": [
+    "fraction",
+    "number",
+    "words",
+    "parse"
+  ],
+  "author": "Dmitry Yv <dfcreative@gmail.com>",
+  "license": "MIT"
+}
