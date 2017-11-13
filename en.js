@@ -216,9 +216,13 @@ module.exports = {
 		'm U': (m, U) => [m, U],
 		'u-u U': (u1, u2, U) => [parseInt('' + u1 + u2), U],
 		'u t-U': (u, t, U) => [u, t + U],
+		't-u U': (t, u, U) => [t + u, U],
 		'u T': (u, T) => [u, T],
 		'u M': (u, M) => [u, M],
-		't-u u-M': (t, u1, u2, M) => [t + u1, u2 * M]
+		't-u u-M': (t, u1, u2, M) => [t + u1, u2 * M],
+		't-t': (t1, t2) => [t1, t2],
+		't t': (t1, t2) => [t1, t2],
+		't-u t-u': (t1, u1, t2, u2) => [t1 + u1, t2 + u2],
 	}
 }
 

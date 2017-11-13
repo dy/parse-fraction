@@ -27,7 +27,7 @@ t('reserved words', t => {
 	t.end()
 })
 
-t.only('.12', t => {
+t('.12', t => {
 	t.deepEqual(parseFract('zero-point-one-two'), [12, 100])
 	t.deepEqual(parseFract('Twelve percent'), [12, 100])
 	t.deepEqual(parseFract('12%'), [12, 100])
@@ -42,6 +42,26 @@ t.only('.12', t => {
 
 	t.end()
 })
+
+t('point', t => {
+	t.deepEqual(parseFract('.9'), [9, 10])
+	t.deepEqual(parseFract('0.9'), [9, 10])
+	t.deepEqual(parseFract('point 9'), [9, 10])
+	t.deepEqual(parseFract('point nine'), [9, 10])
+
+	t.end()
+})
+
+t('pairs', t => {
+	t.deepEqual(parseFract('fifty-fifty'), [50, 50])
+	t.deepEqual(parseFract('50/50'), [50, 50])
+	t.deepEqual(parseFract('twenty-five seventy-five'), [25, 75])
+	t.deepEqual(parseFract('fifteen/eighty-five'), [15, 85])
+	t.deepEqual(parseFract('twenty eighty'), [20, 80])
+
+	t.end()
+})
+
 
 t('wiki fractional numbers', t => {
 	// https://en.wikipedia.org/wiki/List_of_numbers#Fractional_numbers
@@ -155,21 +175,6 @@ t('constant', t => {
 
 	// [2 * pi]
 	parseFract('tau')
-})
-
-t('point', t => {
-	parseFract('.9')
-	parseFract('0.9')
-	parseFract('point 9')
-	parseFract('point nine')
-})
-
-t('pairs', t => {
-	parseFract('fifty-fifty')
-	parseFract('50/50')
-	parseFract('twenty-five seventy-five')
-	parseFract('fifteen/eighty-five')
-	parseFract('twenty eighty')
 })
 
 t('number-word', t => {
