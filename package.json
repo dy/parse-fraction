@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Parse numerator and denominator from a written fraction",
   "main": "index.js",
-  "dependencies": {
-    "defined": "^1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "tape": "^4.8.0"
   },
