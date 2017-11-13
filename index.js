@@ -21,7 +21,7 @@ function parse (str, t) {
     let left = str.slice(0, match.index).trim()
     let right = str.slice(match.index + match[0].length).trim()
 
-    let unit = parseNumber(left, t)
+    let unit = left ? parseNumber(left, t) : 0
     let fract = parseNumber(right, t)
     let mag = Math.pow(10, Math.ceil(Math.log(fract) / Math.LN10))
 

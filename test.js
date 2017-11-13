@@ -27,10 +27,11 @@ t('reserved words', t => {
 	t.end()
 })
 
-t('.12', t => {
-	parseFract('zero-point-one-two')
-	parseFract('Twelve percent')
-	parseFract('12%')
+t.only('.12', t => {
+	t.deepEqual(parseFract('zero-point-one-two'), [12, 100])
+	t.deepEqual(parseFract('Twelve percent'), [12, 100])
+	t.deepEqual(parseFract('12%'), [12, 100])
+	t.deepEqual(parseFract('.12'), [12, 100])
 	t.deepEqual(parseFract('three twenty-fifths'), [3, 25])
 	t.deepEqual(parseFract('nine seventy-fifths'), [9, 75])
 	t.deepEqual(parseFract('six fiftieths'), [6, 50])
