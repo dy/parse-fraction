@@ -112,7 +112,7 @@ t('wiki fractional numbers', t => {
 	t.deepEqual(parseFract('point two five'), [25, 100])
 
 	t.deepEqual(parseFract('one-hundred-twenty-five thousandths'), [125, 1000])
-	t.deepEqual(parseFract('one-hundred-and-twenty-five thousandths'), [125, 1000])
+	// t.deepEqual(parseFract('one-hundred-and-twenty-five thousandths'), [125, 1000])
 
 	t.deepEqual(parseFract('point one'), [1, 10])
 	t.deepEqual(parseFract('one tenth'), [1, 10])
@@ -186,7 +186,7 @@ t('decimals', t => {
 	t.end()
 })
 
-t('constant', t => {
+t.skip('constant', t => {
 	// [sqrt(5) + 1, 2]
 	parseFract('golden')
 	parseFract('phi')
@@ -199,7 +199,7 @@ t('constant', t => {
 	parseFract('tau')
 })
 
-t('number-word', t => {
+t.skip('number-word', t => {
 	parseFract('one 21st')
 	parseFract('3 / 32nd')
 	parseFract('1.2 million 21st')
@@ -209,7 +209,7 @@ t('number-word', t => {
 	t.end()
 })
 
-t('dates', t => {
+t.skip('dates', t => {
 	parseFract('Two thirty-five') //235
 	parseFract('Two-three-five') //235
 	parseFract('Two hundred thirty-five') //235
@@ -279,7 +279,7 @@ t('dates', t => {
 	parseFract('Two thousand and ten') //2010
 })
 
-t('numerals', t => {
+t.skip('numerals', t => {
 	// t.deepEqual(parseFract('one third'), [1, 3])
 	// t.deepEqual(parseFract('seven eighths'), [7, 8])
 
@@ -314,12 +314,12 @@ t('numerals', t => {
 	t.end()
 })
 
-t('ru locale', t => {
+t.skip('ru locale', t => {
 
 	t.end()
 })
 
-t('edge cases', t => {
+t.skip('edge cases', t => {
 	t.throws(() => parseFract(123))
 
 	t.end()

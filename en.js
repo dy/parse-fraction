@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-	point: /-?point-?|\./,
+	point: /-?point-?(?!$)|\./,
 	over: /-?over-?|-?of-?|[\\\/÷]/,
 	junction: /-?and\b-?|\&/,
 

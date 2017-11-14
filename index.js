@@ -59,11 +59,11 @@ function parseFraction (str, t) {
 
     // test if last value is numeric for `9 1/2` cases
     let last = left.split(' ').pop()
-    let lastN = parseInt(last)
+    let lastN = parseInt(last.replace(/[\,\.]/ig, ''))
 
     if (!isNaN(lastN)) {
       left = left.slice(0, -last.length)
-      let num = parseNumber(left, t)
+      let num = left ? parseNumber(left, t) : 0
       return [num * denom + lastN, denom]
     }
 
