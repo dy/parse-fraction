@@ -16,25 +16,95 @@ function parse (str, t) {
 
   let match
 
+  // hundred percent
+  if (match = t.percent.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 100]
+  }
+  // hundred perdime
+  if (match = t.perdime.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 10]
+  }
+  // hundred permille
+  if (match = t.permille.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 1000]
+  }
+  // hundred permyriad
+  if (match = t.permyriad.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 10000]
+  }
+  // hundred perlakh
+  if (match = t.perlakh.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 100000]
+  }
+  // hundred perion
+  if (match = t.perion.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 1e6]
+  }
+  // hundred percrore
+  if (match = t.percrore.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 1e7]
+  }
+  // hundred perawk
+  if (match = t.perawk.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 1e8]
+  }
+  // hundred ppb
+  if (match = t.ppb.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 1e9]
+  }
+
+  // hundred minutes
+  if (match = t.minute.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 60]
+  }
+  // hundred seconds
+  if (match = t.second.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let unit = parseNumber(left, t)
+    return [unit, 3600]
+  }
+
+
   // one point two
   if (match = t.point.exec(str)) {
     let left = str.slice(0, match.index).trim()
     let right = str.slice(match.index + match[0].length).trim()
-
     let unit = left ? parseNumber(left, t) : 0
-    let fract = parseNumber(right, t)
-    let mag = Math.pow(10, Math.ceil(Math.log(fract) / Math.LN10))
 
-    return [unit * mag + fract, mag]
-  }
+    // fraction part
+    let [pattern, args, zeros] = detectPattern(right, t)
+    args.push(0)
 
-  // hundred percent
-  if (match = t.percent.exec(str)) {
-    let left = str.slice(0, match.index).trim()
+    if (!t.pattern[pattern + ' U']) {
+      throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
+    }
 
-    let unit = parseNumber(left, t)
+    let fract = t.pattern[pattern + ' U'].apply(t, args)[0]
 
-    return [unit, 100]
+    let mag = Math.pow(10, Math.floor(Math.log(fract) / Math.LN10) + 1)
+    let zeroAdjust = Math.pow(10, zeros)
+
+    return [unit * mag + fract, mag * zeroAdjust]
   }
 
   // 1 over 2
@@ -80,6 +150,7 @@ function detectPattern (str, t) {
   let delim = /[-−—⁃\s]+|$/i
   let s = str
   let match
+  let zeros = 0
 
   while (match = delim.exec(s)) {
     // get chunk
@@ -87,24 +158,33 @@ function detectPattern (str, t) {
 
     if (!chunk) break
 
-    // put chunk type to pattern
-    let type = detectType(chunk, t)
+    if (!t.junction.test(chunk)) {
+      // put chunk type to pattern
+      let type = detectType(chunk, t)
 
-    pattern.push(type[0])
-    args.push(type[1])
+      // count leading zeros
+      if (type[1] === 0 && zeros === args.length) {
+        zeros++
+      }
 
-    pattern.push(/[-−—⁃]/.test(match[0]) ? '-' : ' ')
+      pattern.push(type[0])
+      args.push(type[1])
+      pattern.push(/[-−—⁃]/.test(match[0]) ? '-' : ' ')
+    }
+
 
     // leave rest of string only
     s = s.slice(match.index + match[0].length)
   }
 
-  return [pattern.join('').trim(), args]
+  return [pattern.join('').trim(), args, zeros]
 }
 
 
 // return numeral type from the string
 function detectType(str, t) {
+  str = str.replace(/[\,\.]/ig, '')
+
   let num = parseFloat(str)
 
   // 28.93
