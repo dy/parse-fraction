@@ -3,18 +3,84 @@
 const en = require('./en')
 const unicode = require('./unicode')
 
-module.exports = parse
+module.exports = parseFraction
 
 
-function parse (str, t) {
+function parseFraction (str, t) {
   if (typeof str !== 'string') throw Error('Argument should be a string')
   str = str.trim().toLowerCase()
 
-  if (unicode[str]) return unicode[str]
+  // 9½ etc
+  if (unicode[str[str.length - 1]]) {
+    let n = parseInt(str.slice(0, -1))
+
+    let fract = unicode[str.slice(-1)]
+
+    if (!isNaN(n)) {
+      fract[0] += n * fract[1]
+    }
+
+    return fract
+  }
 
   if (!t) t = en
 
   let match
+
+
+  // one point two
+  if (match = t.point.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let right = str.slice(match.index + match[0].length).trim()
+    let unit = left ? parseNumber(left, t) : 0
+
+    // fraction part
+    let [pattern, args, zeros] = detectPattern(right, t)
+    args.push(0)
+
+    if (!t.pattern[pattern + ' U']) {
+      throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
+    }
+
+    let fract = t.pattern[pattern + ' U'].apply(t, args)[0]
+
+    let mag = Math.pow(10, Math.floor(Math.log(fract) / Math.LN10) + 1)
+    let zeroAdjust = Math.pow(10, zeros)
+
+    return [unit * mag + fract, mag * zeroAdjust]
+  }
+
+  // 1 over 2
+  if (match = t.over.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let right = str.slice(match.index + match[0].length).trim()
+
+    let denom = parseNumber(right, t)
+
+    // test if last value is numeric for `9 1/2` cases
+    let last = left.split(' ').pop()
+    let lastN = parseInt(last)
+
+    if (!isNaN(lastN)) {
+      left = left.slice(0, -last.length)
+      let num = parseNumber(left, t)
+      return [num * denom + lastN, denom]
+    }
+
+    let num = parseNumber(left, t)
+    return [num, denom]
+  }
+
+  // N and a half
+  if (match = t.junction.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let right = str.slice(match.index + match[0].length).trim()
+
+    let int = parseNumber(left, t)
+    let fract = parseFraction(right, t)
+
+    return [int * fract[1] + fract[0], fract[1]]
+  }
 
   // hundred percent
   if (match = t.percent.exec(str)) {
@@ -84,39 +150,6 @@ function parse (str, t) {
     return [unit, 3600]
   }
 
-
-  // one point two
-  if (match = t.point.exec(str)) {
-    let left = str.slice(0, match.index).trim()
-    let right = str.slice(match.index + match[0].length).trim()
-    let unit = left ? parseNumber(left, t) : 0
-
-    // fraction part
-    let [pattern, args, zeros] = detectPattern(right, t)
-    args.push(0)
-
-    if (!t.pattern[pattern + ' U']) {
-      throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
-    }
-
-    let fract = t.pattern[pattern + ' U'].apply(t, args)[0]
-
-    let mag = Math.pow(10, Math.floor(Math.log(fract) / Math.LN10) + 1)
-    let zeroAdjust = Math.pow(10, zeros)
-
-    return [unit * mag + fract, mag * zeroAdjust]
-  }
-
-  // 1 over 2
-  if (match = t.over.exec(str)) {
-    let left = str.slice(0, match.index).trim()
-    let right = str.slice(match.index + match[0].length).trim()
-
-    let num = parseNumber(left, t)
-    let denom = parseNumber(right, t)
-
-    return [num, denom]
-  }
 
   // any generic sort of pattern
   let [patternStr, args] = detectPattern(str, t)

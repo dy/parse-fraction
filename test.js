@@ -164,24 +164,26 @@ t('wiki fractional numbers', t => {
 
 t('decimals', t => {
 	// https://en.wikipedia.org/wiki/English_numerals#Fractions_and_decimals
-	parseFract('one over two')
+	t.deepEqual(parseFract('one over two'), [1, 2])
 
-	parseFract('two thousandths')
-	parseFract('nought point zero zero two')
+	t.deepEqual(parseFract('two thousandths'), [2, 1000])
+	t.deepEqual(parseFract('nought point zero zero two'), [2, 1000])
 
-	parseFract('three point one four one six')
+	t.deepEqual(parseFract('three point one four one six'), [31416, 10000])
 
-	parseFract('ninety-nine and three tenths')
-	parseFract('ninety-nine point three')
+	t.deepEqual(parseFract('ninety-nine and three tenths'), [993, 10])
+	t.deepEqual(parseFract('ninety-nine point three'), [993, 10])
 
-	parseFract('one and a half')
+	t.deepEqual(parseFract('one and a half'), [3, 2])
 
-	parseFract('six and a quarter')
+	t.deepEqual(parseFract('six and a quarter'), [25, 4])
 
-	parseFract('seven and five eighths')
+	t.deepEqual(parseFract('seven and five eighths'), [7*8 + 5, 8])
 
-	parseFract('9 1/2')
-	parseFract('9½')
+	t.deepEqual(parseFract('9 1/2'), [19, 2])
+	t.deepEqual(parseFract('9½'), [19, 2])
+
+	t.end()
 })
 
 t('constant', t => {

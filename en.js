@@ -3,12 +3,12 @@
 module.exports = {
 	point: /-?point-?|\./,
 	over: /-?over-?|-?of-?|[\\\/÷]/,
-	junction: /-?and\b|\&/,
+	junction: /-?and\b-?|\&/,
 
 	percent: /%|-?percent/,
 	perdime: /-?perdime|-?perdecime/,
 	permille: /‰|-?permille|-?permil/,
-	permyriad: /‱|-?myriadth|-?permyriad?|-?bps|-?basis\spoints?/,
+	permyriad: /‱|-?myriadth|-?permyriad?|-?bps|-?basis\spoints?$/,
 	perlakh: /-?lakhth|-?perlakh/,
 	perion: /-?perion|-?ppm/,
 	percrore: /-?percrore/,
@@ -251,6 +251,7 @@ module.exports = {
 
 		'u t-U': (u, t, U) => [u, t + U],
 		't-u U': (t, u, U) => [t + u, U],
+		't-u u U': (t, u1, u2, U) => [t + u1, U],
 		't-u M': (t, u, M) => [t + u, M],
 		'u m-M': (u, m, M) => [u, m * M],
 		'u u-M': (u1, u2, M) => [u1, u2 * M],
