@@ -156,6 +156,46 @@ function parseFraction (str, t) {
 
   if (t.pattern[patternStr]) return t.pattern[patternStr].apply(t, args)
 
+
+  // too complex pattern - detect num/denom middle
+
+  // u | u
+  if (match = /u[\s]+u/.exec(patternStr)) {
+    let leftStr = patternStr.slice(0, match.index + 1)
+    let left = leftStr + ' U'
+    let rightStr = patternStr.slice(match.index + match[0].length - 1)
+    let right = rightStr.toLowerCase() + ' U'
+
+    let middleIdx = left.split(t.delim).length - 1
+    let num, denom
+
+    if (t.pattern[left]) {
+      num = t.pattern[left].apply(t, args.slice(0, middleIdx))[0]
+    }
+    else {
+      throw Error('Unknown pattern `' + left + '` for string `' + leftStr + '`')
+    }
+
+    if (t.pattern[right]) {
+      denom = t.pattern[right].apply(t, args.slice(middleIdx))[0]
+    }
+    else {
+      throw Error('Unknown pattern `' + right + '` for string `' + rightStr + '`')
+    }
+
+    return [num, denom]
+  }
+
+  // reached hundred magnitude from the right side
+  // or
+  // ...u m t | u m... m2 === hundred
+  // ...u m | u m ... m2 >= m1
+  // ...u m | t-u m... m2 > m1
+  // ...u m | u m... m2 > m1
+
+  // remove subpatterns
+  /u[\s-]m[\s-]t[\s-]u[\s-]m[\s-]u/
+
   throw Error('Unknown pattern `' + patternStr + '` for string `' + str + '`')
 }
 
@@ -180,12 +220,14 @@ function parseNumber (str, t) {
 function detectPattern (str, t) {
   let pattern = []
   let args = []
-  let delim = /[-−—⁃\s]+|$/i
+  let delim = t.delim
   let s = str
-  let match
+  let match = delim.exec(s)
   let zeros = 0
 
-  while (match = delim.exec(s)) {
+  if (!match) match = /.+/.exec(s)
+
+  while (match) {
     // get chunk
     let chunk = s.slice(0, match.index)
 
@@ -208,6 +250,11 @@ function detectPattern (str, t) {
 
     // leave rest of string only
     s = s.slice(match.index + match[0].length)
+
+    match = delim.exec(s)
+    if (!match) {
+      match = /$/.exec(s)
+    }
   }
 
   return [pattern.join('').trim(), args, zeros]

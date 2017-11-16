@@ -3,7 +3,8 @@
 module.exports = {
 	point: /-?point-?(?!$)|\./,
 	over: /-?over-?|-?of-?|[\\\/÷]/,
-	junction: /-?and\b-?|\&/,
+	junction: /-?\band\b-?|\&/,
+	delim: /[-−—⁃\s]+/i,
 
 	percent: /%|-?percent/,
 	perdime: /-?perdime|-?perdecime/,
@@ -253,6 +254,9 @@ module.exports = {
 		't-u U': (t, u, U) => [t + u, U],
 		't-u u U': (t, u1, u2, U) => [t + u1, U],
 		't-u M': (t, u, M) => [t + u, M],
+		't u-M': (t, u, M) => [t, u * M],
+		't u M': (t, u, M) => [t, u * M],
+		't u m': (t, u, m) => [(t + u) * m, 1],
 		'u m-M': (u, m, M) => [u, m * M],
 		'u u-M': (u1, u2, M) => [u1, u2 * M],
 		'u t-u M': (u1, t, u2, M) => [u1, (t + u2) * M],
@@ -264,6 +268,29 @@ module.exports = {
 		't-t': (t1, t2) => [t1, t2],
 		't t': (t1, t2) => [t1, t2],
 		't-u t-u': (t1, u1, t2, u2) => [t1 + u1, t2 + u2],
+
+		'u m t-u m u m t-u U': (u1, m1, t1, u11, m11, u2, m2, t2, u22, U) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2 + u22), U]
+
+		// 'u m t-u m u m t-u u m t-u m u m t-U': (
+		// 	u1, m1, t1, u11, m11,
+		// 	u2, m2, t2, u22,
+		// 	u3, m3, t3, u33, m33,
+		// 	u4, m4, t4, U) => [
+		// 		(u1 * m1 + t1 + u11) * m11 +
+		// 		(u2 * m2 + t2 + u22),
+		// 		(u3 * m3 + t3 + u33) * m33 +
+		// 		(u4 * m4 + t4 + U)
+		// 	],
+		// 'u m t m u m t u m t m u m T': (
+		// 	u1, m1, t1, u11, m11,
+		// 	u2, m2, t2, u22,
+		// 	u3, m3, t3, u33, m33,
+		// 	u4, m4, t4, U) => [
+		// 		(u1 * m1 + t1 + u11) * m11 +
+		// 		(u2 * m2 + t2 + u22),
+		// 		(u3 * m3 + t3 + u33) * m33 +
+		// 		(u4 * m4 + t4 + U)
+		// 	]
 	}
 }
 
