@@ -186,6 +186,7 @@ function parseFraction (str, t) {
     return [num, denom]
   }
 
+  //FIXME: handle special cases of long numbers
   // reached hundred magnitude from the right side
   // or
   // ...u m t | u m... m2 === hundred
@@ -194,7 +195,7 @@ function parseFraction (str, t) {
   // ...u m | u m... m2 > m1
 
   // remove subpatterns
-  /u[\s-]m[\s-]t[\s-]u[\s-]m[\s-]u/
+  // /(u[\s-]m[\s-])?(t[\s-])?(u[\s-])?(m[\s-])?u?/
 
   throw Error('Unknown pattern `' + patternStr + '` for string `' + str + '`')
 }
@@ -206,12 +207,12 @@ function parseNumber (str, t) {
 
   let [pattern, args] = detectPattern(str, t)
 
-  pattern += ' U'
+  let patternStr = pattern.toLowerCase() + ' U'
   args.push(0)
 
-  if (t.pattern[pattern]) return t.pattern[pattern].apply(t, args)[0]
+  if (t.pattern[patternStr]) return t.pattern[patternStr].apply(t, args)[0]
 
-  throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
+  throw Error('Unknown pattern `' + patternStr + '` for string `' + str + '`')
   return NaN
 }
 
@@ -225,7 +226,12 @@ function detectPattern (str, t) {
   let match = delim.exec(s)
   let zeros = 0
 
-  if (!match) match = /.+/.exec(s)
+  let n = parseFloat(str)
+  if (!isNaN(n)) {
+    return ['n', [n], 0]
+  }
+
+  if (!match) match = /$/.exec(s)
 
   while (match) {
     // get chunk

@@ -237,6 +237,7 @@ module.exports = {
 		'u U': (u, U) => [u, U],
 		'm U': (m, U) => [m, U],
 
+		//FIXME: generate this part
 		'u u U': (u1, u2, U) => [parseInt('' + u1 + u2), U],
 		'u-u U': (u1, u2, U) => [parseInt('' + u1 + u2), U],
 		'u u u U': (u1, u2, u3, U) => [parseInt('' + u1 + u2 + u3), U],
@@ -269,28 +270,20 @@ module.exports = {
 		't t': (t1, t2) => [t1, t2],
 		't-u t-u': (t1, u1, t2, u2) => [t1 + u1, t2 + u2],
 
-		'u m t-u m u m t-u U': (u1, m1, t1, u11, m11, u2, m2, t2, u22, U) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2 + u22), U]
-
-		// 'u m t-u m u m t-u u m t-u m u m t-U': (
-		// 	u1, m1, t1, u11, m11,
-		// 	u2, m2, t2, u22,
-		// 	u3, m3, t3, u33, m33,
-		// 	u4, m4, t4, U) => [
-		// 		(u1 * m1 + t1 + u11) * m11 +
-		// 		(u2 * m2 + t2 + u22),
-		// 		(u3 * m3 + t3 + u33) * m33 +
-		// 		(u4 * m4 + t4 + U)
-		// 	],
-		// 'u m t m u m t u m t m u m T': (
-		// 	u1, m1, t1, u11, m11,
-		// 	u2, m2, t2, u22,
-		// 	u3, m3, t3, u33, m33,
-		// 	u4, m4, t4, U) => [
-		// 		(u1 * m1 + t1 + u11) * m11 +
-		// 		(u2 * m2 + t2 + u22),
-		// 		(u3 * m3 + t3 + u33) * m33 +
-		// 		(u4 * m4 + t4 + U)
-		// 	]
+		//FIXME: generate this part
+		'u m t-u m u m t-u U': (u1, m1, t1, u11, m11, u2, m2, t2, u22, U) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2 + u22), U],
+		'u m t-u m t-u U': (u1, m1, t1, u11, m11, t2, u22, U) => [(u1 * m1 + t1 + u11) * m11 + (t2 + u22), U],
+		't-u m u m t-u U': (t1, u11, m11, u2, m2, t2, u22, U) => [(t1 + u11) * m11 + (u2 * m2 + t2 + u22), U],
+		'u m t m u m t-u U': (u1, m1, t1, m11, u2, m2, t2, u22, U) => [(u1 * m1 + t1) * m11 + (u2 * m2 + t2 + u22), U],
+		'u m t-u m u m t U': (u1, m1, t1, u11, m11, u2, m2, t2, U) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2), U],
+		'u m t m u m t U': (u1, m1, t1, m11, u2, m2, t2, U) => [(u1 * m1 + t1) * m11 + (u2 * m2 + t2), U],
+		'u m t m u m U': (u1, m1, t1, m11, u2, m2, U) => [(u1 * m1 + t1) * m11 + (u2 * m2), U],
+		'u m m u m t U': (u1, m1, m11, u2, m2, t2, U) => [(u1 * m1) * m11 + (u2 * m2 + t2), U],
+		'u m m u m U': (u1, m1, m11, u2, m2, U) => [(u1 * m1) * m11 + (u2 * m2), U],
+		't-u m u m U': (t1, u11, m11, u2, m2, U) => [(t1 + u11) * m11 + (u2 * m2), U],
+		'u m t u U': (u1, m1, t1, u2, U) => [(u1 * m1 + t1 + u2), U],
+		'u m t-u U': (u1, m1, t1, u2, U) => [(u1 * m1 + t1 + u2), U],
+		'u m u U': (u1, m1, u2, U) => [(u1 * m1 + u2), U]
 	}
 }
 

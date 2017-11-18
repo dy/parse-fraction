@@ -279,15 +279,15 @@ t.skip('dates', t => {
 	parseFract('Two thousand and ten') //2010
 })
 
-t.only('numerals', t => {
-	// t.deepEqual(parseFract('one third'), [1, 3])
-	// t.deepEqual(parseFract('seven eighths'), [7, 8])
+t('numerals', t => {
+	t.deepEqual(parseFract('one third'), [1, 3])
+	t.deepEqual(parseFract('seven eighths'), [7, 8])
 
-	// t.deepEqual(parseFract('seventy two-hundredth'), [70, 200])
-	// t.deepEqual(parseFract('one seventy-two hundredth'), [1, 7200])
-	// t.deepEqual(parseFract('seventy two hundredth'), [70, 200])
-	// t.deepEqual(parseFract('seventy two hundred'), [70, 200])
-	// t.deepEqual(parseFract('seventy-two hundredth'), [72, 100])
+	t.deepEqual(parseFract('seventy two-hundredth'), [70, 200])
+	t.deepEqual(parseFract('one seventy-two hundredth'), [1, 7200])
+	t.deepEqual(parseFract('seventy two hundredth'), [70, 200])
+	t.deepEqual(parseFract('seventy two hundred'), [7200, 1])
+	t.deepEqual(parseFract('seventy-two hundredth'), [72, 100])
 
 	t.deepEqual(parseFract('one hundred twenty-three thousand four hundred fifty-six one hundred twenty-three thousand four hundred fifty-sixths'), [123456, 123456])
 	// t.deepEqual(parseFract('one hundred twenty thousand four hundred fifty one hundred twenty thousand four hundred fiftieths'), [120450, 120450])
@@ -296,11 +296,11 @@ t.only('numerals', t => {
 	// t.deepEqual(parseFract('twenty-three thousand four hundred three thousand fifty-sixths'), [23400, 3056])
 
 
-	// t.deepEqual(parseFract('one hundred twenty-three thousand four hundred fifty-six / one hundred twenty-three thousand four hundred fifty-sixths'), [123456, 123456])
-	// t.deepEqual(parseFract('one hundred twenty thousand four hundred fifty / one hundred twenty thousand four hundred fiftieths'), [120450, 120450])
-	// t.deepEqual(parseFract('one hundred thousand four hundred / one hundred thousand four hundredths'), [100400, 100400])
-	// t.deepEqual(parseFract('twenty-three thousand four hundred / three thousand sixths'), [23400, 3006])
-	// t.deepEqual(parseFract('twenty-three thousand four hundred / three thousand fifty-sixths'), [23400, 3056])
+	t.deepEqual(parseFract('one hundred twenty-three thousand four hundred fifty-six / one hundred twenty-three thousand four hundred fifty-sixths'), [123456, 123456])
+	t.deepEqual(parseFract('one hundred twenty thousand four hundred fifty / one hundred twenty thousand four hundred fiftieths'), [120450, 120450])
+	t.deepEqual(parseFract('one hundred thousand four hundred / one hundred thousand four hundredths'), [100400, 100400])
+	t.deepEqual(parseFract('twenty-three thousand four hundred / three thousand sixths'), [23400, 3006])
+	t.deepEqual(parseFract('twenty-three thousand four hundred / three thousand fifty-sixths'), [23400, 3056])
 
 
 	// t.deepEqual(parseFract('one hundredth'), [1, 100])
