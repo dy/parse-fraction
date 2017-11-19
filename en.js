@@ -1,5 +1,7 @@
 'use strict'
 
+const extend = require('object-assign')
+
 let t = {
 	point: /-?point-?(?!$)|\./,
 	over: /-?over-?|-?of-?|[\\\/÷]/,
@@ -37,6 +39,7 @@ let t = {
 			zero: 0,
 			naught: 0,
 			nought: 0,
+			aught: 0,
 			nil: 0,
 			oh: 0,
 			o: 0,
@@ -240,126 +243,125 @@ let t = {
 
 	// u - cardinal unit, t - cardinal ten, m - cardinal mag
 	// U - ordinal unit, T - ordinal ten, M - ordinal mag
-	pattern: {
-		'n': n => [n, 1],
-		'u': u => [u, 1],
-		'c': u => [c, 1],
-		't T': (t, T) => [t, T],
-		'u m u M': (u, m, U, M) => [u * m, U * M],
-		'u m u T': (u, m, u2, T) => [u * m + u2, T],
-		'u m u m T': (u, m, U, M, T) => [u * m, U * M + T],
-		'u m T': (u, m, T) => [u * m, T],
-		'u m t T': (u, m, t, T) => [u * m + t, T],
-		'u m t u M': (u, m, t, u2, M) => [u * m + t, u2 * M],
-		't-u T': (t, u, T) => [t + u, T],
-		't u m T': (t, u, m, T) => [t, u * m + T],
-
-		't-u M': (t, u, M) => [t + u, M],
-		't u-M': (t, u, M) => [t, u * M],
-		't u M': (t, u, M) => [t, u * M],
-		't u m': (t, u, m) => [(t + u) * m, 1],
-		'u m-M': (u, m, M) => [u, m * M],
-		'u u-M': (u1, u2, M) => [u1, u2 * M],
-		'u t-u M': (u1, t, u2, M) => [u1, (t + u2) * M],
-		'u T': (u, T) => [u, T],
-		'u M': (u, M) => [u, M],
-		't-u u-M': (t, u1, u2, M) => [t + u1, u2 * M],
-		'u-m-t-u M': (u1, m, t, u2, M) => [u1 * m + t + u2, M],
-		'u-m-t-u M': (u1, m, t, u2, M) => [u1 * m + t + u2, M],
-		't-t': (t1, t2) => [t1, t2],
-		't t': (t1, t2) => [t1, t2],
-		't-u t-u': (t1, u1, t2, u2) => [t1 + u1, t2 + u2],
-
-		//FIXME: generate this part
-		'u m t u m U': (u, m, t, U, M, U2) => [u * m + t, U * M + U2],
-		'u m t u m t-U': (u, m, t, U, M, T, U2) => [u * m + t, U * M + T + U2],
-		'u m u m U': (u, m, U, M, U2) => [u * m, U * M + U2],
-		'u m u m t-U': (u, m, U, M, T, U2) => [u * m, U * M + T + U2],
-		't u m U': (t, u, m, U) => [t, u * m + U],
-		't u m t-U': (t, u, m, T, U) => [t, u * m + T + U],
-
-		'u m t-u T': (u1, m1, t1, u2, T) => [(u1 * m1 + t1 + u2), T],
-		'u m t u T': (u, m, t, u2, T) => [u * m + t + u2, T],
-		'u m t u m T': (u, m, t, U, M, T) => [u * m + t, U * M + T]
-	}
+	pattern: {}
 }
 
-seq(t.pattern, 'N')
-seq(t.pattern, 'U')
+generatePatternsBySuffix(t.pattern, '', () => 1)
+generatePatternsBySuffix(t.pattern, ' M', M => M)
+generatePatternsBySuffix(t.pattern, ' m-M', (m, M) => m * M)
+generatePatternsBySuffix(t.pattern, ' T', T => T)
+generatePatternsBySuffix(t.pattern, ' u m t-U', (U, M, T, U2) => U * M + T + U2)
+generatePatternsBySuffix(t.pattern, ' u m t U', (U, M, T, U2) => U * M + T + U2)
+generatePatternsBySuffix(t.pattern, ' u m T', (U, M, T) => U * M + T)
+generatePatternsBySuffix(t.pattern, ' u m U', (U, M, U2) => U * M + U2)
+generatePatternsBySuffix(t.pattern, ' u M', (U, M) => U * M)
+generatePatternsBySuffix(t.pattern, ' u-M', (U, M) => U * M)
+generatePatternsBySuffix(t.pattern, ' t-U', (T, U) => T + U)
+generatePatternsBySuffix(t.pattern, ' t U', (T, U) => T + U)
+generatePatternsBySuffix(t.pattern, ' N', N => N)
+generatePatternsBySuffix(t.pattern, ' U', U => U)
 
-function seq(obj, N) {
-	obj[N] = (N) => [1, N]
+function generatePatternsBySuffix(obj, N, f) {
+	obj['u' + N] =
+	obj['t' + N] =
+	obj['m' + N] =
+	obj['c' + N] =
+	obj['n' + N] = (n, ...args) => [n, f(...args)]
+	obj['t-u' + N] = (t, u, ...args) => [t + u, f(...args)]
+	obj['t m' + N] =
+	obj['u m' + N] =
+	obj['u-m' + N] =
+	obj['n m' + N] =
+	obj['u c' + N] =
+	obj['t c' + N] = (u, c, ...args) => [u * c, f(...args)]
+	obj['t m u' + N] =
+	obj['u m u' + N] =
+	obj['u-m u' + N] =
+	obj['u-m-u' + N] = (u, m, u2, ...args) => [u * m + u2, f(...args)]
+	obj['u m t' + N] =
+	obj['u-m t' + N] =
+	obj['u-m-t' + N] = (u, m, t, ...args) => [u * m + t, f(...args)]
+	obj['u m t-u' + N] =
+	obj['u-m t-u' + N] =
+	obj['u m t u' + N] =
+	obj['u-m-t-u' + N] =
+	obj['u-m t u' + N] = (u, m, t, u2, ...args) => [u * m + t + u2, f(...args)]
 
-	obj['u ' + N] =
-	obj['t ' + N] =
-	obj['m ' + N] =
-	obj['n ' + N] = (n, N) => [n, N]
-	obj['t-u ' + N] = (t, u, N) => [t + u, N]
-	obj['u m ' + N] = (u, m, N) => [u * m, N]
-	obj['u m u ' + N] = (u, m, u2, N) => [u * m + u2, N]
-	obj['u m t ' + N] = (u, m, t, N) => [u * m + t, N]
-	obj['u m t-u ' + N] = (u, m, t, u2, N) => [u * m + t + u2, N]
-	obj['u m t u ' + N] = (u, m, t, u2, N) => [u * m + t + u2, N]
-	obj['n m ' + N] = (n, m, N) => [n * m, N]
-	obj['c ' + N] = (c, N) => [c, N]
-	obj['u c ' + N] = (u, c, N) => [u * c, N]
-	obj['t c ' + N] = (u, c, N) => [u * c, N]
+	// FIXME: remove duplicate
+	obj['t m u m' + N] =
+	obj['u m u m' + N] =
+	obj['u m u-m' + N] =
+	obj['u m n m' + N] =
+	obj['u m u c' + N] =
+	obj['u m t c' + N] = (u0, m0, u, m, ...args) => m0 > m ? [u0 * m0 + u * m, f(...args)] : [u0 * m0, u * m + f(...args)]
+	obj['t m u m u' + N] =
+	obj['u m u m u' + N] =
+	obj['u m u-m u' + N] =
+	obj['u m u-m-u' + N] = (u0, m0, u, m, u2, ...args) => [u0 * m0 + u * m + u2, f(...args)]
+	obj['t m u m t' + N] =
+	obj['u m u m t' + N] =
+	obj['u m u-m t' + N] =
+	obj['u m u-m-t' + N] = (u0, m0, u, m, t, ...args) => [u0 * m0 + u * m + t, f(...args)]
+	obj['t m u m t u' + N] =
+	obj['u m u m t u' + N] =
+	obj['u m u m t-u' + N] =
+	obj['u m u-m t-u' + N] =
+	obj['u m u-m-t-u' + N] =
+	obj['u m u-m t u' + N] = (u0, m0, u, m, t, u2, ...args) => [u0 * m0 + u * m + t + u2, f(...args)]
 
-	obj['u t-' + N] = (u, T, N) => [u, T + N]
-	obj['t t-' + N] = (t, T, N) => [t, T + N]
-	obj['m t-' + N] = (m, T, N) => [m, T + N]
-	obj['n t-' + N] = (n, T, N) => [n, T + N]
-	obj['t-u t-' + N] = (t, u, T, N) => [t + u, T + N]
-	obj['u m t-' + N] = (u, m, T, N) => [u * m, T + N]
-	obj['u m u t-' + N] = (u, m, u2, T, N) => [u * m + u2, T + N]
-	obj['u m t t-' + N] = (u, m, t, T, N) => [u * m + t, T + N]
-	obj['u m t-u t-' + N] = (u, m, t, u2, T, N) => [u * m + t + u2, T + N]
-	obj['u m t u t-' + N] = (u, m, t, u2, T, N) => [u * m + t + u2, T + N]
-	obj['n m t-' + N] = (n, m, N) => [n * m, T + N]
-	obj['c t-' + N] = (c, N) => [c, T + N]
-	obj['u c t-' + N] = (u, c, N) => [u * c, T + N]
-	obj['t c t-' + N] = (u, c, N) => [u * c, T + N]
+	//FIXME: sort this out/extend properly
+	obj['u m t-u m u m t-u' + N] = (u1, m1, t1, u11, m11, u2, m2, t2, u22, ...args) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2 + u22), f(...args)]
+	obj['u m t-u m t-u' + N] = (u1, m1, t1, u11, m11, t2, u22, ...args) => [(u1 * m1 + t1 + u11) * m11 + (t2 + u22), f(...args)]
+	obj['t-u m u m t-u' + N] = (t1, u11, m11, u2, m2, t2, u22, ...args) => [(t1 + u11) * m11 + (u2 * m2 + t2 + u22), f(...args)]
+	obj['u m t m u m t-u' + N] = (u1, m1, t1, m11, u2, m2, t2, u22, ...args) => [(u1 * m1 + t1) * m11 + (u2 * m2 + t2 + u22), f(...args)]
+	obj['u m t-u m u m t' + N] = (u1, m1, t1, u11, m11, u2, m2, t2, ...args) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2), f(...args)]
+	obj['u m t m u m t' + N] = (u1, m1, t1, m11, u2, m2, t2, ...args) => [(u1 * m1 + t1) * m11 + (u2 * m2 + t2), f(...args)]
+	obj['u m t m u m' + N] = (u1, m1, t1, m11, u2, m2, ...args) => [(u1 * m1 + t1) * m11 + (u2 * m2), f(...args)]
+	obj['u m m u m t' + N] = (u1, m1, m11, u2, m2, t2, ...args) => [(u1 * m1) * m11 + (u2 * m2 + t2), f(...args)]
+	obj['u m m u m' + N] = (u1, m1, m11, u2, m2, ...args) => [(u1 * m1) * m11 + (u2 * m2), f(...args)]
+	obj['t-u m u m' + N] = (t1, u11, m11, u2, m2, ...args) => [(t1 + u11) * m11 + (u2 * m2), f(...args)]
 
-	obj['u t t ' + N] = (u, T, N) => [u, T + N]
-	obj['t t t ' + N] = (t, T, N) => [t, T + N]
-	obj['m t t ' + N] = (m, T, N) => [m, T + N]
-	obj['n t t ' + N] = (n, T, N) => [n, T + N]
-	obj['t-u t t ' + N] = (t, u, T, N) => [t + u, T + N]
-	obj['u m t t ' + N] = (u, m, T, N) => [u * m, T + N]
-	obj['u m u t t ' + N] = (u, m, u2, T, N) => [u * m + u2, T + N]
-	obj['u m t t t ' + N] = (u, m, t, T, N) => [u * m + t, T + N]
-	obj['u m t-u t t ' + N] = (u, m, t, u2, T, N) => [u * m + t + u2, T + N]
-	obj['u m t u t t ' + N] = (u, m, t, u2, T, N) => [u * m + t + u2, T + N]
-	obj['n m t t ' + N] = (n, m, N) => [n * m, T + N]
-	obj['c t t ' + N] = (c, N) => [c, T + N]
-	obj['u c t t ' + N] = (u, c, N) => [u * c, T + N]
-	obj['t c t t ' + N] = (u, c, N) => [u * c, T + N]
-
-	//FIXME: sort this out
-	obj['u m t-u m u m t-u ' + N] = (u1, m1, t1, u11, m11, u2, m2, t2, u22, N) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2 + u22), N]
-	obj['u m t-u m t-u ' + N] = (u1, m1, t1, u11, m11, t2, u22, N) => [(u1 * m1 + t1 + u11) * m11 + (t2 + u22), N]
-	obj['t-u m u m t-u ' + N] = (t1, u11, m11, u2, m2, t2, u22, N) => [(t1 + u11) * m11 + (u2 * m2 + t2 + u22), N]
-	obj['u m t m u m t-u ' + N] = (u1, m1, t1, m11, u2, m2, t2, u22, N) => [(u1 * m1 + t1) * m11 + (u2 * m2 + t2 + u22), N]
-	obj['u m t-u m u m t ' + N] = (u1, m1, t1, u11, m11, u2, m2, t2, N) => [(u1 * m1 + t1 + u11) * m11 + (u2 * m2 + t2), N]
-	obj['u m t m u m t ' + N] = (u1, m1, t1, m11, u2, m2, t2, N) => [(u1 * m1 + t1) * m11 + (u2 * m2 + t2), N]
-	obj['u m t m u m ' + N] = (u1, m1, t1, m11, u2, m2, N) => [(u1 * m1 + t1) * m11 + (u2 * m2), N]
-	obj['u m m u m t ' + N] = (u1, m1, m11, u2, m2, t2, N) => [(u1 * m1) * m11 + (u2 * m2 + t2), N]
-	obj['u m m u m ' + N] = (u1, m1, m11, u2, m2, N) => [(u1 * m1) * m11 + (u2 * m2), N]
-	obj['t-u m u m ' + N] = (t1, u11, m11, u2, m2, N) => [(t1 + u11) * m11 + (u2 * m2), N]
-
-	obj['u u ' + N] = (u1, u2, N) => [parseInt('' + u1 + u2), N]
-	obj['u-u ' + N] = (u1, u2, N) => [parseInt('' + u1 + u2), N]
-	obj['u u u ' + N] = (u1, u2, u3, N) => [parseInt('' + u1 + u2 + u3), N]
-	obj['u-u-u ' + N] = (u1, u2, u3, N) => [parseInt('' + u1 + u2 + u3), N]
-	obj['u-u u ' + N] = (u1, u2, u3, N) => [parseInt('' + u1 + u2 + u3), N]
-	obj['u u-u ' + N] = (u1, u2, u3, N) => [parseInt('' + u1 + u2 + u3), N]
-	obj['u-u-u-u ' + N] = (u1, u2, u3, u4, N) => [parseInt('' + u1 + u2 + u3 + u4), N]
-	obj['u u u u ' + N] = (u1, u2, u3, u4, N) => [parseInt('' + u1 + u2 + u3 + u4), N]
-	obj['u u u u u ' + N] = (u1, u2, u3, u4, u5, N) => [parseInt('' + u1 + u2 + u3 + u4 + u5), N]
-	obj['u-u-u-u-u ' + N] = (u1, u2, u3, u4, u5, N) => [parseInt('' + u1 + u2 + u3 + u4 + u5), N]
-	obj['u u u u u u ' + N] = (u1, u2, u3, u4, u5, u6, N) => [parseInt('' + u1 + u2 + u3 + u4 + u5 + u6), N]
-	obj['u-u-u-u-u-u ' + N] = (u1, u2, u3, u4, u5, u6, N) => [parseInt('' + u1 + u2 + u3 + u4 + u5 + u6), N]
+	obj['u u' + N] =
+	obj['u-u' + N] = (u1, u2, ...args) => [parseInt('' + u1 + u2), f(...args)]
+	obj['t u-u' + N] =
+	obj['t u u' + N] =
+	obj['u u u' + N] =
+	obj['u-u-u' + N] =
+	obj['u-u u' + N] =
+	obj['u u-u' + N] = (u1, u2, u3, ...args) => [parseInt('' + u1 + u2 + u3), f(...args)]
+	obj['u-u-u-u' + N] =
+	obj['u u u u' + N] = (u1, u2, u3, u4, ...args) => [parseInt('' + u1 + u2 + u3 + u4), f(...args)]
+	obj['u u u u u' + N] =
+	obj['u-u-u-u-u' + N] = (u1, u2, u3, u4, u5, ...args) => [parseInt('' + u1 + u2 + u3 + u4 + u5), f(...args)]
+	obj['u u u u u u' + N] =
+	obj['u-u-u-u-u-u' + N] = (u1, u2, u3, u4, u5, u6, ...args) => [parseInt('' + u1 + u2 + u3 + u4 + u5 + u6), f(...args)]
 }
+
+
+// pattern exceptions
+extend(t.pattern, {
+	N: N => [1, N],
+	U: U => [1, U],
+
+	'n': n => [n, 1],
+	'u': u => [u, 1],
+	'c': u => [c, 1],
+
+	'u t-u M': (u1, t, u2, M) => [u1, (t + u2) * M],
+	'u t-u': (u, T, U) => [u, T + U],
+
+	't u m': (t, u, m) => [(t + u) * m, 1],
+	't u m': (t, u, m) => [(t + u) * m, 1],
+	't-t': (t1, t2) => [t1, t2],
+	't t': (t1, t2) => [t1, t2],
+	't m': (t1, m) => [t1, m],
+	'u u': (u1, u2) => [u1, u2],
+	'u-u': (u1, u2) => [u1, u2],
+	'u t': (u, t) => [u, t],
+	't u': (t, u) => [t, u],
+	'u m u m': (u1, m1, u2, m2) => [u1 * m1, u2 * m2],
+	't-u t-u': (t1, u1, t2, u2) => [t1 + u1, t2 + u2],
+})
 
 
 module.exports = t

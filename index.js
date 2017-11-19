@@ -187,13 +187,6 @@ function parseFraction (str, t) {
   }
 
   // TODO: handle special cases of long numbers
-  // reached hundred magnitude from the right side
-  // or
-  // ...u m t | u m... m2 === hundred
-  // ...u m | u m ... m2 >= m1
-  // ...u m | t-u m... m2 > m1
-  // ...u m | u m... m2 > m1
-
   // remove subpatterns
   // /(u[\s-]m[\s-])?(t[\s-])?(u[\s-])?(m[\s-])?u?/
 
@@ -285,11 +278,11 @@ function detectType(str, t) {
   // thousandth
   if (t.ordinal.magnitude[str]) return ['M', t.ordinal.magnitude[str]]
 
-  // three
-  if (t.cardinal.unit[str] != null) return ['u', t.cardinal.unit[str]]
-
   // fourty
   if (t.cardinal.ten[str]) return ['t', t.cardinal.ten[str]]
+
+  // three
+  if (t.cardinal.unit[str] != null) return ['u', t.cardinal.unit[str]]
 
   // thousand
   if (t.cardinal.magnitude[str]) return ['m', t.cardinal.magnitude[str]]

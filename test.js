@@ -232,74 +232,76 @@ t('number-word', t => {
 	t.end()
 })
 
-t.skip('dates', t => {
-	parseFract('Two thirty-five') //235
-	parseFract('Two-three-five') //235
-	parseFract('Two hundred thirty-five') //235
-	parseFract('Two hundred and thirty-five') //235
+t('dates', t => {
+	t.deepEqual(parseFract('Two thirty-five'), [2, 35])
+	t.deepEqual(parseFract('Two-three-five'), [235, 1])
+	t.deepEqual(parseFract('Two hundred thirty-five'), [235, 1])
+	t.deepEqual(parseFract('Two hundred and thirty-five'), [235, 1])
 
-	parseFract('Nine eleven') //911
-	parseFract('Nine-one-one') //911
-	parseFract('Nine hundred eleven') //911
-	parseFract('Nine hundred (and) eleven') //911
+	t.deepEqual(parseFract('Nine eleven'), [9, 11])
+	t.deepEqual(parseFract('Nine-one-one'), [911, 1])
+	t.deepEqual(parseFract('Nine hundred eleven'), [911, 1])
+	t.deepEqual(parseFract('Nine hundred and eleven'), [911, 1])
 
-	parseFract('Nine ninety-nine') //999
-	parseFract('Nine-nine-nine') //999
-	parseFract('Nine hundred ninety-nine') //999
-	parseFract('Nine hundred and ninety-nine') //999
+	t.deepEqual(parseFract('Nine ninety-nine'), [9, 99])
+	t.deepEqual(parseFract('Nine-nine-nine'), [999, 1])
+	t.deepEqual(parseFract('Nine hundred ninety-nine'), [999, 1])
+	t.deepEqual(parseFract('Nine hundred and ninety-nine'), [999, 1])
 
-	parseFract('One thousand') //1000
-	parseFract('1K') //1000
-	parseFract('Ten hundred') //1000
+	t.deepEqual(parseFract('One thousand'), [1000, 1])
+	// t.deepEqual(parseFract('1K'), [1000, 1])
+	t.deepEqual(parseFract('Ten hundred'), [1000, 1])
 
-	parseFract('Ten oh-four') //1004
-	parseFract('One thousand four') //1004
-	parseFract('One thousand and four') //1004
+	t.deepEqual(parseFract('Ten oh-four'), [1004, 1])
+	t.deepEqual(parseFract('One thousand four'), [1004, 1])
+	t.deepEqual(parseFract('One thousand and four'), [1004, 1])
 
-	parseFract('Ten ten') //1010
-	parseFract('One thousand ten') //1010
-	parseFract('One thousand (and) ten') //1010
+	t.deepEqual(parseFract('Ten ten'), [10, 10])
+	t.deepEqual(parseFract('One thousand ten'), [1010, 1])
+	t.deepEqual(parseFract('One thousand and ten'), [1010, 1])
 
-	parseFract('Ten fifty') //1050
+	t.deepEqual(parseFract('Ten fifty'), [10, 50])
 
-	parseFract('Twelve twenty-five') //1225
-	parseFract('One-two-two-five') //1225
-	parseFract('One thousand, two hundred (and) twenty-five') //1225
-	parseFract('Twelve-two-five') //1225
+	t.deepEqual(parseFract('Twelve twenty-five'), [12, 25])
+	t.deepEqual(parseFract('One-two-two-five'), [1225, 1])
+	t.deepEqual(parseFract('One thousand, two hundred and twenty-five'), [1225, 1])
+	t.deepEqual(parseFract('Twelve-two-five'), [1225, 1])
 
-	parseFract('Nineteen hundred') //1900
-	parseFract('One thousand, nine hundred') //1900
-	parseFract('Nineteen aught') //1900
+	t.deepEqual(parseFract('Nineteen hundred'), [1900, 1])
+	t.deepEqual(parseFract('One thousand, nine hundred'), [1000, 900])
+	t.deepEqual(parseFract('Nineteen aught'), [19, 0])
 
-	parseFract('Nineteen oh-one') //1901
-	parseFract('One thousand, nine hundred one') //1901
-	parseFract('One thousand, nine hundred and one') //1901
-	parseFract('Nineteen aught one') //1901
+	t.deepEqual(parseFract('Nineteen oh-one'), [1901, 1])
+	t.deepEqual(parseFract('One thousand, nine hundred one'), [1901, 1])
+	t.deepEqual(parseFract('One thousand, nine hundred and one'), [1901, 1])
+	t.deepEqual(parseFract('Nineteen aught one'), [1901, 1])
 
-	parseFract('Nineteen nineteen') //1919
+	t.deepEqual(parseFract('Nineteen nineteen'), [19, 19])
 
-	parseFract('Two thousand') //2000
-	parseFract('Two triple-oh') //2000
-	parseFract('2K') //2000
+	t.deepEqual(parseFract('Two thousand'), [2000, 1])
+	// t.deepEqual(parseFract('Two triple-oh'), [2000, 1])
+	// t.deepEqual(parseFract('2K'), [2000, 1])
 
-	parseFract('Twenty oh-one') //2001
-	parseFract('Twenty hundred one') //2001
-	parseFract('Twenty hundred and one') //2001
-	parseFract('Two double-oh-one') //2001
-	parseFract('Two oh-oh-one') //2001
+	t.deepEqual(parseFract('Twenty oh-one'), [2001, 1])
+	t.deepEqual(parseFract('Twenty hundred one'), [2001, 1])
+	t.deepEqual(parseFract('Twenty hundred and one'), [2001, 1])
+	// t.deepEqual(parseFract('Two double-oh-one'), [2001, 1])
+	t.deepEqual(parseFract('Two oh-oh-one'), [2, 1])
 
-	parseFract('Two thousand and nine') //2009
-	parseFract('Twenty hundred nine') //2009
-	parseFract('Twenty hundred and nine') //2009
-	parseFract('Two double-oh-nine') //2009
-	parseFract('Two oh-oh-nine') //2009
+	t.deepEqual(parseFract('Two thousand and nine'), [2009, 1])
+	t.deepEqual(parseFract('Twenty hundred nine'), [2009, 1])
+	t.deepEqual(parseFract('Twenty hundred and nine'), [2009, 1])
+	// t.deepEqual(parseFract('Two double-oh-nine'), [2009, 1])
+	t.deepEqual(parseFract('Two oh-oh-nine'), [2, 9])
 
-	parseFract('Twenty ten') //2010
-	parseFract('two-oh-one-oh') //2010
-	parseFract('Two thousand ten') //2010
-	parseFract('Twenty hundred ten') //2010
-	parseFract('Twenty hundred and ten') //2010
-	parseFract('Two thousand and ten') //2010
+	t.deepEqual(parseFract('Twenty ten'), [20, 10])
+	t.deepEqual(parseFract('two-oh-one-oh'), [2010, 1])
+	t.deepEqual(parseFract('Two thousand ten'), [2010, 1])
+	t.deepEqual(parseFract('Twenty hundred ten'), [2010, 1])
+	t.deepEqual(parseFract('Twenty hundred and ten'), [2010, 1])
+	t.deepEqual(parseFract('Two thousand and ten'), [2010, 1])
+
+	t.end()
 })
 
 t('numerals', t => {
@@ -326,9 +328,9 @@ t('numerals', t => {
 	t.deepEqual(parseFract('twenty-three thousand four hundred / three thousand fifty-sixths'), [23400, 3056])
 
 
-	// t.deepEqual(parseFract('one hundredth'), [1, 100])
+	t.deepEqual(parseFract('one hundredth'), [1, 100])
+	t.deepEqual(parseFract('thirty-two hundredths'), [32, 100])
 	// t.deepEqual(parseFract('thirty two hundredths'), [30, 200])
-	// t.deepEqual(parseFract('thirty-two hundredths'), [32, 100])
 	// t.deepEqual(parseFract('seventeen hundredths'), [1, 1700])
 	// t.deepEqual(parseFract('seventy hundredth'), [1, 7000])
 
@@ -338,8 +340,8 @@ t('numerals', t => {
 	// t.deepEqual(parseFract('hundred hundredths'), [100, 100])
 	// t.deepEqual(parseFract('thousand millions'), [1000000000, 1])
 
-	// t.deepEqual(parseFract('one millionth'), [1 / 1000000])
-	// t.deepEqual(parseFract('twenty-one millionth'), [21 / 1000000])
+	t.deepEqual(parseFract('one millionth'), [1, 1000000])
+	t.deepEqual(parseFract('twenty-one millionth'), [21, 1000000])
 
 	t.end()
 })
