@@ -26,7 +26,7 @@ parseFract('fifty-fifty') // [50, 50]
 
 ## parseFraction(str, locale?)
 
-Return `[numerator, denominator]` couple from a string. Optionally pass locale object for other than `en` locales, see [en locale](./en.json) example.
+Return `[numerator, denominator]` couple from a string. Optionally pass locale object for other than `en` locales, see [en locale](https://github.com/dfcreative/parse-fraction/blob/master/en.js) example.
 
 ## License
 
