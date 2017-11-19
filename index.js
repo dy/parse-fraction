@@ -186,7 +186,7 @@ function parseFraction (str, t) {
     return [num, denom]
   }
 
-  //FIXME: handle special cases of long numbers
+  // TODO: handle special cases of long numbers
   // reached hundred magnitude from the right side
   // or
   // ...u m t | u m... m2 === hundred
@@ -298,6 +298,9 @@ function detectType(str, t) {
 
   // thousand
   if (t.cardinal.magnitude[str]) return ['m', t.cardinal.magnitude[str]]
+
+  // PI etc
+  if (t.constant[str]) return ['c', t.constant[str]]
 
   throw Error('Unknown part `' + str + '`')
 }

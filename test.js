@@ -188,20 +188,42 @@ t('decimals', t => {
 	t.end()
 })
 
-t.skip('constant', t => {
-	// [sqrt(5) + 1, 2]
-	parseFract('golden')
-	parseFract('phi')
-	parseFract('φ')
+t('readme', t => {
+	t.deepEqual(parseFract('half'), [1, 2])
+	t.deepEqual(parseFract('one third'), [1, 3])
+	t.deepEqual(parseFract('seven eighths'), [7, 8])
+	t.deepEqual(parseFract('¼'), [1, 4])
+	t.deepEqual(parseFract('13 / 15'), [13, 15])
+	t.deepEqual(parseFract('19 ÷ 21'), [19, 21])
+	t.deepEqual(parseFract('full'), [1, 1])
+	t.deepEqual(parseFract('one millionth'), [1 , 1000000])
+	t.deepEqual(parseFract('five over six'), [5, 6])
+	t.deepEqual(parseFract('zero-point-one-two'), [12, 100])
+	t.deepEqual(parseFract('.12'), [12, 100])
+	t.deepEqual(parseFract('12%'), [12, 100])
+	t.deepEqual(parseFract('one hundred twenty-three thousand four hundred fifty-six one hundred twenty-three thousand four hundred fifty-sixths'), [123456, 123456])
+	t.deepEqual(parseFract('fifty-fifty'), [50, 50])
 
-	// [pi, 1]
-	parseFract('pi')
-
-	// [2 * pi]
-	parseFract('tau')
+	t.end()
 })
 
-t.skip('number-word', t => {
+t('constant', t => {
+	let φ = (Math.sqrt(5) + 1) / 2
+
+	// [sqrt(5) + 1, 2]
+	t.deepEqual(parseFract('φ over τ'), [φ, Math.PI * 2])
+
+	// [pi, 1]
+	t.deepEqual(parseFract('π over phi'), [Math.PI, φ])
+	t.deepEqual(parseFract('two π over phi'), [Math.PI * 2, φ])
+
+	// [2 * pi]
+	t.deepEqual(parseFract('tau over pi'), [Math.PI * 2, Math.PI])
+
+	t.end()
+})
+
+t.only('number-word', t => {
 	parseFract('one 21st')
 	parseFract('3 / 32nd')
 	parseFract('1.2 million 21st')
@@ -323,13 +345,7 @@ t('numerals', t => {
 	t.end()
 })
 
-t.skip('ru locale', t => {
-
-	t.end()
-})
-
-t.skip('edge cases', t => {
-	t.throws(() => parseFract(123))
+t.skip('locale', t => {
 
 	t.end()
 })

@@ -19,6 +19,19 @@ module.exports = {
 	minute: /-?minutes?|-?mins?/,
 	second: /-?seconds?|-?secs?/,
 
+	constant: {
+		tau: Math.PI * 2,
+		turn: Math.PI * 2,
+		τ: Math.PI * 2,
+
+		pi: Math.PI,
+		π: Math.PI,
+
+		φ: (1 + Math.sqrt(5)) / 2,
+		phi: (1 + Math.sqrt(5)) / 2,
+		golden: (1 + Math.sqrt(5)) / 2
+	},
+
 	cardinal: {
 		unit: {
 			zero: 0,
@@ -256,6 +269,10 @@ module.exports = {
 		't u m U': (t, u, m, U) => [t, u * m + U],
 		't u m T': (t, u, m, T) => [t, u * m + T],
 		't u m t-U': (t, u, m, T, U) => [t, u * m + T + U],
+
+		'c': u => [c, 1],
+		'c U': (c, U) => [c, U],
+		'u c U': (u, c, U) => [u * c, U],
 
 		//FIXME: generate this part
 		'u u U': (u1, u2, U) => [parseInt('' + u1 + u2), U],
