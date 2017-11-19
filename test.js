@@ -223,12 +223,11 @@ t('constant', t => {
 	t.end()
 })
 
-t.only('number-word', t => {
-	parseFract('one 21st')
-	parseFract('3 / 32nd')
-	parseFract('1.2 million 21st')
-	parseFract('twenty-three point three eight billion 79th')
-	parseFract('9,311th')
+t('number-word', t => {
+	t.deepEqual(parseFract('one 21st'), [1, 21])
+	t.deepEqual(parseFract('3 / 32nd'), [3, 32])
+	t.deepEqual(parseFract('1.2 million / 21st'), [1.2e6, 21])
+	t.deepEqual(parseFract('9,311th'), [1, 9311])
 
 	t.end()
 })
@@ -365,6 +364,28 @@ t('number-to-word direct', t => {
 	for (let i = 0; i < 5e2; i++) {
 		for (let j = 0; j < 5e2; j++) {
 			let str = n.toWords(i) + ' ' + n.toWordsOrdinal(j)
+			assert.deepEqual(parseFract(str), [i, j])
+		}
+	}
+
+	t.end()
+})
+
+t('number-to-word ordinal', t => {
+	for (let i = 0; i < 5e2; i++) {
+		for (let j = 0; j < 5e2; j++) {
+			let str = n.toWords(i) + ' ' + n.toOrdinal(j)
+			assert.deepEqual(parseFract(str), [i, j])
+		}
+	}
+
+	t.end()
+})
+
+t('number ordinal', t => {
+	for (let i = 0; i < 5e2; i++) {
+		for (let j = 0; j < 5e2; j++) {
+			let str = i + ' ' + n.toOrdinal(j)
 			assert.deepEqual(parseFract(str), [i, j])
 		}
 	}

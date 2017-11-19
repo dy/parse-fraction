@@ -27,6 +27,38 @@ function parseFraction (str, t) {
 
   let match
 
+  // 1 over 2
+  if (match = t.over.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let right = str.slice(match.index + match[0].length).trim()
+
+    let denom = parseNumber(right, t)
+
+    // test if last value is numeric for `9 1/2` cases
+    let last = left.split(' ').pop()
+    let lastN = parseInt(last.replace(/[\,\.]/ig, ''))
+
+    if (!isNaN(lastN)) {
+      left = left.slice(0, -last.length)
+      let num = left ? parseNumber(left, t) : 0
+      return [num * denom + lastN, denom]
+    }
+
+    let num = parseNumber(left, t)
+
+    return [num, denom]
+  }
+
+  // N and a half
+  if (match = t.junction.exec(str)) {
+    let left = str.slice(0, match.index).trim()
+    let right = str.slice(match.index + match[0].length).trim()
+
+    let int = parseNumber(left, t)
+    let fract = parseFraction(right, t)
+
+    return [int * fract[1] + fract[0], fract[1]]
+  }
 
   // one point two
   if (match = t.point.exec(str)) {
@@ -48,38 +80,6 @@ function parseFraction (str, t) {
     let zeroAdjust = Math.pow(10, zeros)
 
     return [unit * mag + fract, mag * zeroAdjust]
-  }
-
-  // 1 over 2
-  if (match = t.over.exec(str)) {
-    let left = str.slice(0, match.index).trim()
-    let right = str.slice(match.index + match[0].length).trim()
-
-    let denom = parseNumber(right, t)
-
-    // test if last value is numeric for `9 1/2` cases
-    let last = left.split(' ').pop()
-    let lastN = parseInt(last.replace(/[\,\.]/ig, ''))
-
-    if (!isNaN(lastN)) {
-      left = left.slice(0, -last.length)
-      let num = left ? parseNumber(left, t) : 0
-      return [num * denom + lastN, denom]
-    }
-
-    let num = parseNumber(left, t)
-    return [num, denom]
-  }
-
-  // N and a half
-  if (match = t.junction.exec(str)) {
-    let left = str.slice(0, match.index).trim()
-    let right = str.slice(match.index + match[0].length).trim()
-
-    let int = parseNumber(left, t)
-    let fract = parseFraction(right, t)
-
-    return [int * fract[1] + fract[0], fract[1]]
   }
 
   // hundred percent
@@ -226,11 +226,6 @@ function detectPattern (str, t) {
   let match = delim.exec(s)
   let zeros = 0
 
-  let n = parseFloat(str)
-  if (!isNaN(n)) {
-    return ['n', [n], 0]
-  }
-
   if (!match) match = /$/.exec(s)
 
   while (match) {
@@ -269,7 +264,7 @@ function detectPattern (str, t) {
 
 // return numeral type from the string
 function detectType(str, t) {
-  str = str.replace(/[\,\.]/ig, '')
+  str = str.replace(/[\,]/ig, '')
 
   let num = parseFloat(str)
 
@@ -277,8 +272,8 @@ function detectType(str, t) {
   if (!isNaN(num)) {
     for (let suffix in t.ordinal.suffix) {
       if (str.slice(-suffix.length) === suffix) return ['N', num]
-      else return ['n', num]
     }
+    return ['n', num]
   }
 
   // third
