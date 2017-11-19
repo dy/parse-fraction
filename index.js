@@ -138,17 +138,17 @@ function parseFraction (str, t) {
   }
 
   // hundred minutes
-  if (match = t.minute.exec(str)) {
-    let left = str.slice(0, match.index).trim()
-    let unit = parseNumber(left, t)
-    return [unit, 60]
-  }
+  // if (match = t.minute.exec(str)) {
+  //   let left = str.slice(0, match.index).trim()
+  //   let unit = parseNumber(left, t)
+  //   return [unit, 60]
+  // }
   // hundred seconds
-  if (match = t.second.exec(str)) {
-    let left = str.slice(0, match.index).trim()
-    let unit = parseNumber(left, t)
-    return [unit, 3600]
-  }
+  // if (match = t.second.exec(str)) {
+  //   let left = str.slice(0, match.index).trim()
+  //   let unit = parseNumber(left, t)
+  //   return [unit, 3600]
+  // }
 
 
   // any generic sort of pattern

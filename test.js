@@ -2,6 +2,8 @@
 
 const t = require('tape')
 const parseFract = require('./')
+const n = require('number-to-words')
+const assert = require('assert')
 
 t('numbers', t => {
 	t.deepEqual(parseFract('13 / 15'), [13, 15])
@@ -119,7 +121,7 @@ t('wiki fractional numbers', t => {
 	t.deepEqual(parseFract('One perdecime'), [1, 10])
 	t.deepEqual(parseFract('one perdime'), [1, 10])
 
-	t.deepEqual(parseFract('One minute'), [1, 60])
+	// t.deepEqual(parseFract('One minute'), [1, 60])
 	t.deepEqual(parseFract('One sixtieth'), [1, 60])
 
 	t.deepEqual(parseFract('One percent'), [1, 100])
@@ -128,7 +130,7 @@ t('wiki fractional numbers', t => {
 	t.deepEqual(parseFract('one permille'), [1, 1000])
 	t.deepEqual(parseFract('point zero zero one'), [1, 1000])
 
-	t.deepEqual(parseFract('one second'), [1, 3600])
+	// t.deepEqual(parseFract('one second'), [1, 3600])
 	t.deepEqual(parseFract('a thirty-six hundredth'), [1, 3600])
 
 	t.deepEqual(parseFract('One myriadth'), [1, 10000])
@@ -332,3 +334,24 @@ t.skip('edge cases', t => {
 	t.end()
 })
 
+t('number-to-word over', t => {
+	for (let i = 0; i < 5e2; i++) {
+		for (let j = 0; j < 5e2; j++) {
+			let str = n.toWords(i) + ' over ' + n.toWordsOrdinal(j)
+			assert.deepEqual(parseFract(str), [i, j])
+		}
+	}
+
+	t.end()
+})
+
+t('number-to-word direct', t => {
+	for (let i = 0; i < 5e2; i++) {
+		for (let j = 0; j < 5e2; j++) {
+			let str = n.toWords(i) + ' ' + n.toWordsOrdinal(j)
+			assert.deepEqual(parseFract(str), [i, j])
+		}
+	}
+
+	t.end()
+})

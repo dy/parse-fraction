@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "number-to-words": "^1.2.3",
     "tape": "^4.8.0"
   },
   "scripts": {

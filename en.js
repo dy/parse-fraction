@@ -4,7 +4,7 @@ module.exports = {
 	point: /-?point-?(?!$)|\./,
 	over: /-?over-?|-?of-?|[\\\/÷]/,
 	junction: /-?\band\b-?|\&/,
-	delim: /[-−—⁃\s]+/i,
+	delim: /[-−—⁃\s\,]+/i,
 
 	percent: /%|-?percent/,
 	perdime: /-?perdime|-?perdecime/,
@@ -18,8 +18,6 @@ module.exports = {
 
 	minute: /-?minutes?|-?mins?/,
 	second: /-?seconds?|-?secs?/,
-
-	constant: /phi/,
 
 	cardinal: {
 		unit: {
@@ -236,6 +234,28 @@ module.exports = {
 		'n U': (n, U) => [n, U],
 		'u U': (u, U) => [u, U],
 		'm U': (m, U) => [m, U],
+		't U': (t, U) => [t, U],
+		't T': (t, T) => [t, T],
+		'u m U': (u, m, U) => [u * m, U],
+		'u m u M': (u, m, U, M) => [u * m, U * M],
+		'u m u T': (u, m, u2, T) => [u * m + u2, T],
+		'u m u m U': (u, m, U, M, U2) => [u * m, U * M + U2],
+		'u m u m t-U': (u, m, U, M, T, U2) => [u * m, U * M + T + U2],
+		'u m u t-U': (u, m, u2, T, U) => [u * m + u2, T + U],
+		'u m u m T': (u, m, U, M, T) => [u * m, U * M + T],
+		'u m T': (u, m, T) => [u * m, T],
+		'u m t U': (u, m, t, U) => [u * m + t, U],
+		'u m t T': (u, m, t, T) => [u * m + t, T],
+		'u m t-U': (u, m, t, U) => [u * m, t + U],
+		'u m t t-U': (u, m, t, T, U) => [u * m + t, T + U],
+		'u m t u M': (u, m, t, u2, M) => [u * m + t, u2 * M],
+		'u t U': (u, t, U) => [u, t + U],
+		't t-U': (t1, t2, U) => [t1, t2 + U],
+		't-u T': (t, u, T) => [t + u, T],
+		't-u t-U': (t, u, T, U) => [t + u, T + U],
+		't u m U': (t, u, m, U) => [t, u * m + U],
+		't u m T': (t, u, m, T) => [t, u * m + T],
+		't u m t-U': (t, u, m, T, U) => [t, u * m + T + U],
 
 		//FIXME: generate this part
 		'u u U': (u1, u2, U) => [parseInt('' + u1 + u2), U],
@@ -281,8 +301,15 @@ module.exports = {
 		'u m m u m t U': (u1, m1, m11, u2, m2, t2, U) => [(u1 * m1) * m11 + (u2 * m2 + t2), U],
 		'u m m u m U': (u1, m1, m11, u2, m2, U) => [(u1 * m1) * m11 + (u2 * m2), U],
 		't-u m u m U': (t1, u11, m11, u2, m2, U) => [(t1 + u11) * m11 + (u2 * m2), U],
-		'u m t u U': (u1, m1, t1, u2, U) => [(u1 * m1 + t1 + u2), U],
 		'u m t-u U': (u1, m1, t1, u2, U) => [(u1 * m1 + t1 + u2), U],
+		'u m t-u T': (u1, m1, t1, u2, T) => [(u1 * m1 + t1 + u2), T],
+		'u m t-u t-U': (u1, m1, t1, u2, T, U) => [(u1 * m1 + t1 + u2), T + U],
+		'u m t u t-U': (u, m, t, u2, T, U) => [u * m + t + u2, T + U],
+		'u m t u U': (u, m, t, u2, U) => [u * m + t + u2, U],
+		'u m t u T': (u, m, t, u2, T) => [u * m + t + u2, T],
+		'u m t u m U': (u, m, t, U, M, U2) => [u * m + t, U * M + U2],
+		'u m t u m T': (u, m, t, U, M, T) => [u * m + t, U * M + T],
+		'u m t u m t-U': (u, m, t, U, M, T, U2) => [u * m + t, U * M + T + U2],
 		'u m u U': (u1, m1, u2, U) => [(u1 * m1 + u2), U]
 	}
 }
