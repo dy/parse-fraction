@@ -1,4 +1,4 @@
-# parse-fraction [![experimental](https://img.shields.io/badge/stability-unstable-green.svg)](http://github.com/badges/stability-badges) [![Build Status](https://travis-ci.org/dfcreative/parse-fraction.png)](https://travis-ci.org/dfcreative/parse-fraction)
+# parse-fraction [![experimental](https://img.shields.io/badge/stability-unstable-green.svg)](http://github.com/badges/stability-badges) [![Build Status](https://travis-ci.org/dy/parse-fraction.png)](https://travis-ci.org/dy/parse-fraction)
 
 Parse numerator and denominator from a string.
 
@@ -26,7 +26,7 @@ parseFract('fifty-fifty') // [50, 50]
 
 ## parseFraction(str, locale?)
 
-Return `[numerator, denominator]` couple from a string. Optionally pass locale object for other than `en` locales, see [en locale](https://github.com/dfcreative/parse-fraction/blob/master/en.js) example.
+Return `[numerator, denominator]` couple from a string. Optionally pass locale object for other than `en` locales, see [en locale](https://github.com/dy/parse-fraction/blob/master/en.js) example.
 
 ## License
 
