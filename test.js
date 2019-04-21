@@ -63,11 +63,51 @@ t('.12', t => {
 	t.end()
 })
 
-t('point', t => {
+t.only('point', t => {
 	t.deepEqual(parseFract('.9'), [9, 10])
 	t.deepEqual(parseFract('0.9'), [9, 10])
 	t.deepEqual(parseFract('point 9'), [9, 10])
 	t.deepEqual(parseFract('point nine'), [9, 10])
+
+	// // leading zero
+	t.deepEqual(parseFract('point zero zero zero one'), [1, 10000])
+	t.deepEqual(parseFract('.0001'), [1, 10000])
+	t.deepEqual(parseFract('0.0001'), [1, 10000])
+	t.deepEqual(parseFract('00.0001'), [1, 10000])
+	t.deepEqual(parseFract('.01001'), [1001, 100000])
+	t.deepEqual(parseFract('.00012'), [12, 100000])
+	t.deepEqual(parseFract('2.001'), [2001, 1000])
+	t.deepEqual(parseFract('two point zero zero one'), [2001, 1000])
+	t.deepEqual(parseFract('2.0001'), [20001, 10000])
+	t.deepEqual(parseFract('2.1'), [21, 10])
+	t.deepEqual(parseFract('2000.1'), [20001, 10])
+	t.deepEqual(parseFract('2.100'), [21, 10])
+
+	// zero fraction
+	t.deepEqual(parseFract('2.0000'), [2, 1])
+	t.deepEqual(parseFract('0.0'), [0, 1])
+	t.deepEqual(parseFract('2.0'), [2, 1])
+	t.deepEqual(parseFract('2000.0'), [2000, 1]);
+
+	// point + mag case
+	t.deepEqual(parseFract('1.100 hundred'), [110, 1]);
+	t.deepEqual(parseFract('1.10 hundred'), [110, 1]);
+	t.deepEqual(parseFract('1.1 hundred'), [110, 1]);
+	t.deepEqual(parseFract('1.001 hundred'), [1001, 10]);
+	t.deepEqual(parseFract('0.1 hundred'), [10, 1]);
+	t.deepEqual(parseFract('0.01 hundred'), [1, 1]);
+	t.deepEqual(parseFract('0.001 hundred'), [1, 10]);
+	t.deepEqual(parseFract('0.0001 hundred'), [1, 100]);
+	t.deepEqual(parseFract('2.01 hundred'), [201, 1]);
+	t.deepEqual(parseFract('2.1 hundred'), [210, 1]);
+	t.deepEqual(parseFract('2.1 thousand'), [2100, 1]);
+	t.deepEqual(parseFract('2.01 thousand'), [2010, 1]);
+	t.deepEqual(parseFract('.01 thousand'), [10, 1]);
+	t.deepEqual(parseFract('2.1 million'), [2100000, 1]);
+	t.deepEqual(parseFract('2.41 million'), [2410000, 1]);
+
+	// fract mag case
+	t.deepEqual(parseFract('1.1 hundredth'), [11, 1000]);
 
 	t.end()
 })
@@ -395,29 +435,3 @@ t('number ordinal', t => {
 	t.end()
 })
 
-
-t('leading zero cases', t => {
-	t.deepEqual(parseFract('point zero zero zero one'), [1, 10000])
-	t.deepEqual(parseFract('.0001'), [1, 10000])
-	t.deepEqual(parseFract('0.0001'), [1, 10000])
-	t.deepEqual(parseFract('.01001'), [1001, 100000])
-	t.deepEqual(parseFract('.00012'), [12, 100000])
-	t.deepEqual(parseFract('2.001'), [2001, 1000])
-	t.deepEqual(parseFract('two point zero zero one'), [2001, 1000])
-	t.deepEqual(parseFract('2.0001'), [20001, 10000])
-	t.deepEqual(parseFract('2.1'), [21, 10])
-	t.deepEqual(parseFract('2000.1'), [20001, 10])
-
-	t.end()
-})
-
-t.skip('#1 zero-fraction cases', t => {
-	t.deepEqual(parseFract('2.0000'), [2, 1])
-	t.deepEqual(parseFract('0.0'))
-	t.deepEqual(parseFract('2.0'))
-	t.deepEqual(parseFract('2000.0'), [2000, 1]);
-	t.deepEqual(parseFract('2.1 million'), [2100000, 1]);
-	t.deepEqual(parseFract('2.41 million'), [2410000, 1]);
-
-	t.end()
-})

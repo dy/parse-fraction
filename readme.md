@@ -1,4 +1,4 @@
-# parse-fraction [![experimental](https://img.shields.io/badge/stability-unstable-green.svg)](http://github.com/badges/stability-badges) [![Build Status](https://travis-ci.org/dy/parse-fraction.png)](https://travis-ci.org/dy/parse-fraction)
+# parse-fraction [![unstable](https://img.shields.io/badge/stability-unstable-green.svg)](http://github.com/badges/stability-badges) [![Build Status](https://travis-ci.org/dy/parse-fraction.png)](https://travis-ci.org/dy/parse-fraction)
 
 Parse numerator and denominator from a string.
 

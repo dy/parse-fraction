@@ -3,6 +3,10 @@
 const en = require('./en')
 const unicode = require('./unicode')
 
+Math.log10 = Math.log10 || function(x) {
+  return Math.log(x) * Math.LOG10E;
+}
+
 module.exports = parseFraction
 
 
@@ -69,6 +73,13 @@ function parseFraction (str, t) {
     // fraction part
     let [pattern, args, zeros] = detectPattern(right, t)
 
+    // special case of `n m` fraction pattern, like `0.2 hundred`` - mag should be accounted in result
+    let fracMag = 1
+    if (pattern[pattern.length - 1] === 'm') {
+      pattern = pattern.slice(0, -1).trim()
+      fracMag = args.pop()
+    }
+
     if (!t.pattern[pattern + ' U']) {
       throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
     }
@@ -77,12 +88,26 @@ function parseFraction (str, t) {
     args.push(0)
     let fract = t.pattern[pattern + ' U'].apply(t, args)[0]
 
-    // raise main part to the magnitude of fractional part
-    let mag = Math.pow(10, Math.floor(Math.log(fract) / Math.LN10) + 1)
-    let zeroAdjust = Math.pow(10, zeros)
-    // console.log(str, mag)
+    // zero-fraction means no value in fraction, safely bail out numerator
+    // eg. 2.0
+    if (!fract) {
+      return [unit, 1]
+    }
 
-    return [unit * mag * zeroAdjust + fract, mag * zeroAdjust]
+    // raise main part to the magnitude of fractional part
+    let mag = Math.pow(10, Math.floor(Math.log10(fract)) + 1 + zeros)
+
+    let num = (unit * mag + fract) * fracMag
+    let denom = mag
+
+    // reduce insignificant tail
+    while (!(num % 10) && !(denom % 10)) {
+      num /= 10
+      denom /= 10
+    }
+
+    // TODO: normalize base
+    return [num, denom]
   }
 
   // hundred percent
