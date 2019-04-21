@@ -63,7 +63,7 @@ t('.12', t => {
 	t.end()
 })
 
-t.only('point', t => {
+t('point', t => {
 	t.deepEqual(parseFract('.9'), [9, 10])
 	t.deepEqual(parseFract('0.9'), [9, 10])
 	t.deepEqual(parseFract('point 9'), [9, 10])
@@ -108,6 +108,9 @@ t.only('point', t => {
 
 	// fract mag case
 	t.deepEqual(parseFract('1.1 hundredth'), [11, 1000]);
+	t.deepEqual(parseFract('1.01 hundredth'), [101, 10000]);
+	t.deepEqual(parseFract('.01 hundredth'), [1, 10000]);
+	t.deepEqual(parseFract('2.010 thousandth'), [201, 100000]);
 
 	t.end()
 })

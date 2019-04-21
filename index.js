@@ -79,6 +79,11 @@ function parseFraction (str, t) {
       pattern = pattern.slice(0, -1).trim()
       fracMag = args.pop()
     }
+    // special case of `n M`, like `1.1 hundredth` - mag should be accounted too
+    else if (pattern[pattern.length - 1] === 'M') {
+      pattern = pattern.slice(0, -1).trim()
+      fracMag = 1 / args.pop()
+    }
 
     if (!t.pattern[pattern + ' U']) {
       throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
@@ -100,10 +105,15 @@ function parseFraction (str, t) {
     let num = (unit * mag + fract) * fracMag
     let denom = mag
 
-    // reduce insignificant tail
+    // remove insignificant tail
     while (!(num % 10) && !(denom % 10)) {
       num /= 10
       denom /= 10
+    }
+    // bring fraction to head
+    while (num % 1 || denom % 1) {
+      num *= 10
+      denom *= 10
     }
 
     // TODO: normalize base
