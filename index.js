@@ -60,7 +60,7 @@ function parseFraction (str, t) {
     return [int * fract[1] + fract[0], fract[1]]
   }
 
-  // one point two
+  // one point two, 1.2
   if (match = t.point.exec(str)) {
     let left = str.slice(0, match.index).trim()
     let right = str.slice(match.index + match[0].length).trim()
@@ -68,18 +68,21 @@ function parseFraction (str, t) {
 
     // fraction part
     let [pattern, args, zeros] = detectPattern(right, t)
-    args.push(0)
 
     if (!t.pattern[pattern + ' U']) {
       throw Error('Unknown pattern `' + pattern + '` for string `' + str + '`')
     }
 
+    // infer fractional part via plain-number cardinal pattern
+    args.push(0)
     let fract = t.pattern[pattern + ' U'].apply(t, args)[0]
 
+    // raise main part to the magnitude of fractional part
     let mag = Math.pow(10, Math.floor(Math.log(fract) / Math.LN10) + 1)
     let zeroAdjust = Math.pow(10, zeros)
+    // console.log(str, mag)
 
-    return [unit * mag + fract, mag * zeroAdjust]
+    return [unit * mag * zeroAdjust + fract, mag * zeroAdjust]
   }
 
   // hundred percent
@@ -229,15 +232,21 @@ function detectPattern (str, t) {
 
     if (!t.junction.test(chunk)) {
       // put chunk type to pattern
-      let type = detectType(chunk, t)
+      let [type, value] = detectType(chunk, t)
+
 
       // count leading zeros
-      if (type[1] === 0 && zeros === args.length) {
+      // if new value is zero and counted zero number is args
+      if (value === 0 && zeros === args.length) {
         zeros++
       }
+      // in case of numeric value - count leading zeros from head
+      else if (type === 'n' && !args.length) {
+        zeros += chunk.length - value.toFixed().length
+      }
 
-      pattern.push(type[0])
-      args.push(type[1])
+      pattern.push(type)
+      args.push(value)
       pattern.push(/[-−—⁃]/.test(match[0]) ? '-' : ' ')
     }
 
@@ -255,7 +264,9 @@ function detectPattern (str, t) {
 }
 
 
-// return numeral type from the string
+// return numeral type and value from the string
+// eg. '1' -> ['n', 1]
+// 'zero' -> ['u', 0], 'one' -> ['u', 1]
 function detectType(str, t) {
   str = str.replace(/[\,]/ig, '')
 

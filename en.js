@@ -243,6 +243,7 @@ let t = {
 
 	// u - cardinal unit, t - cardinal ten, m - cardinal mag
 	// U - ordinal unit, T - ordinal ten, M - ordinal mag
+	// n - number
 	pattern: {}
 }
 

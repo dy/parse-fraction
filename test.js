@@ -394,3 +394,30 @@ t('number ordinal', t => {
 
 	t.end()
 })
+
+
+t('leading zero cases', t => {
+	t.deepEqual(parseFract('point zero zero zero one'), [1, 10000])
+	t.deepEqual(parseFract('.0001'), [1, 10000])
+	t.deepEqual(parseFract('0.0001'), [1, 10000])
+	t.deepEqual(parseFract('.01001'), [1001, 100000])
+	t.deepEqual(parseFract('.00012'), [12, 100000])
+	t.deepEqual(parseFract('2.001'), [2001, 1000])
+	t.deepEqual(parseFract('two point zero zero one'), [2001, 1000])
+	t.deepEqual(parseFract('2.0001'), [20001, 10000])
+	t.deepEqual(parseFract('2.1'), [21, 10])
+	t.deepEqual(parseFract('2000.1'), [20001, 10])
+
+	t.end()
+})
+
+t.skip('#1 zero-fraction cases', t => {
+	t.deepEqual(parseFract('2.0000'), [2, 1])
+	t.deepEqual(parseFract('0.0'))
+	t.deepEqual(parseFract('2.0'))
+	t.deepEqual(parseFract('2000.0'), [2000, 1]);
+	t.deepEqual(parseFract('2.1 million'), [2100000, 1]);
+	t.deepEqual(parseFract('2.41 million'), [2410000, 1]);
+
+	t.end()
+})
