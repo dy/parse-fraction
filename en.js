@@ -122,6 +122,7 @@ let t = {
 			third: 3,
 			thirds: 3,
 			quarter: 4,
+			quarters: 4,
 			fourth: 4,
 			fourths: 4,
 			fifth: 5,
